@@ -34,12 +34,6 @@ function CrearGasto(descripcion, gasto, fecha = Date.now(), ...etiquetas) {
     this.fecha = Date.parse(fecha);
   }
 
-  if (etiquetas.length == 0) {
-    this.etiquetas = [];
-  } else {
-    this.etiquetas = etiquetas
-  }
-
   this.mostrarGasto = function () {
     return `Gasto correspondiente a ${this.descripcion} con valor ${this.valor} €`;
   }
@@ -77,6 +71,9 @@ function CrearGasto(descripcion, gasto, fecha = Date.now(), ...etiquetas) {
       }
     })
   }
+
+  this.etiquetas = [];
+  this.anyadirEtiquetas(...etiquetas);
 
   this.borrarEtiquetas = function (...etiquetasParaBorrar) {
     this.etiquetas = this.etiquetas.filter(etiqueta => !etiquetasParaBorrar.includes(etiqueta));
