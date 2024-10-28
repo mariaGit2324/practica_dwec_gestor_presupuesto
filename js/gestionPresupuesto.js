@@ -4,7 +4,7 @@ let presupuesto = 0;
 let gastos = [];
 let idGasto = 0;
 
-function actualizarPresupuesto(cantidad) {
+function ActualizarPresupuesto(cantidad) {
   if (cantidad >= 0) {
     presupuesto = cantidad;
     return presupuesto;
@@ -15,7 +15,7 @@ function actualizarPresupuesto(cantidad) {
 
 };
 
-function mostrarPresupuesto() {
+function MostrarPresupuesto() {
   return `Tu presupuesto actual es de ${presupuesto} €`;
 };
 
@@ -72,6 +72,18 @@ function CrearGasto(descripcion, gasto, fecha = Date.now(), ...etiquetas) {
     })
   }
 
+  this.obtenerPeriodoAgrupacion = function (periodo) {
+    let fecha = new Date(this.fecha);
+
+    if (periodo == "dia") {
+      return fecha.toISOString().slice(0, 10);
+    } else if (periodo == "mes") {
+      return fecha.toISOString().slice(0, 7);
+    } else if (periodo == "anyo") {
+      return fecha.getFullYear().toString();
+    }
+  }
+
   this.etiquetas = [];
   this.anyadirEtiquetas(...etiquetas);
 
@@ -81,30 +93,37 @@ function CrearGasto(descripcion, gasto, fecha = Date.now(), ...etiquetas) {
 
 }
 
-function listarGastos() {
+function ListarGastos() {
   return gastos;
 };
 
-function anyadirGasto(gasto) {
+function AnyadirGasto(gasto) {
   gasto.id = idGasto;
   idGasto++;
   gastos.push(gasto);
 };
 
-function borrarGasto(id) {
+function BorrarGasto(id) {
   gastos = gastos.filter(gasto => gasto.id != id);
 };
 
-function calcularTotalGastos() {
+function CalcularTotalGastos() {
   return gastos.reduce((suma, gasto) => suma + gasto.valor, 0);
 };
 
-function calcularBalance() {
+function CalcularBalance() {
   let gastosTotales = calcularTotalGastos();
 
   return presupuesto - gastosTotales;
 };
 
+function FiltrarGastos() {
+
+};
+
+function AgruparGastos() {
+
+};
 
 // NO MODIFICAR A PARTIR DE AQUÍ: exportación de funciones y objetos creados para poder ejecutar los tests.
 // Las funciones y objetos deben tener los nombres que se indican en el enunciado
@@ -117,5 +136,7 @@ export {
   anyadirGasto,
   borrarGasto,
   calcularTotalGastos,
-  calcularBalance
+  calcularBalance,
+  filtrarGastos,
+  agruparGastos
 }
