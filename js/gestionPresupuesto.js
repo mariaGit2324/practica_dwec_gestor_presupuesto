@@ -4,18 +4,17 @@ let presupuesto = 0;
 let gastos = [];
 let idGasto = 0;
 
-function ActualizarPresupuesto(cantidad) {
+function actualizarPresupuesto(cantidad) {
   if (cantidad >= 0) {
     presupuesto = cantidad;
     return presupuesto;
   } else {
     console.log("Se ha introducido una cantidad negativa.");
     return -1;
-  };
-
+  }
 };
 
-function MostrarPresupuesto() {
+function mostrarPresupuesto() {
   return `Tu presupuesto actual es de ${presupuesto} €`;
 };
 
@@ -93,35 +92,81 @@ function CrearGasto(descripcion, gasto, fecha = Date.now(), ...etiquetas) {
 
 }
 
-function ListarGastos() {
+function listarGastos() {
   return gastos;
 };
 
-function AnyadirGasto(gasto) {
+function anyadirGasto(gasto) {
   gasto.id = idGasto;
   idGasto++;
   gastos.push(gasto);
 };
 
-function BorrarGasto(id) {
+function borrarGasto(id) {
   gastos = gastos.filter(gasto => gasto.id != id);
 };
 
-function CalcularTotalGastos() {
+function calcularTotalGastos() {
   return gastos.reduce((suma, gasto) => suma + gasto.valor, 0);
 };
 
-function CalcularBalance() {
+function calcularBalance() {
   let gastosTotales = calcularTotalGastos();
 
   return presupuesto - gastosTotales;
 };
 
-function FiltrarGastos() {
+function filtrarGastos(gasto) {
+  return gastos.filter(function (g) {
+    let res = true;
 
+    if (gasto.fechaDesde) {
+      let fechaDesdeFiltro = Date.parse(gasto.fechaDesde);
+      if (g.fecha < fechaDesdeFiltro) {
+        res = false;
+      }
+    }
+
+    if (gasto.fechaHasta) {
+      let fechaHastaFiltro = Date.parse(gasto.fechaHasta);
+      if (g.fecha > fechaHastaFiltro) {
+        res = false;
+      }
+    }
+
+    if (gasto.valorMinimo !== undefined) {
+      if (g.valor < gasto.valorMinimo) {
+        res = false;
+      }
+    }
+
+    if (gasto.valorMaximo !== undefined) {
+      if (g.valor > gasto.valorMaximo) {
+        res = false;
+      }
+    }
+
+    if (gasto.descripcionContiene) {
+      if (!g.descripcion.toLowerCase().includes(gasto.descripcionContiene.toLowerCase())) {
+        res = false;
+      }
+    }
+
+    if (gasto.etiquetasTiene) {
+      let etiquetasMin = g.etiquetas.map(etiqueta => etiqueta.toLowerCase());
+      let etiquetasIguales = gasto.etiquetasTiene.some(etiqueta => etiquetasMin.includes(etiqueta.toLowerCase()));
+
+      if (!etiquetasIguales) {
+        res = false;
+      }
+    }
+
+    return res;
+
+  })
 };
 
-function AgruparGastos() {
+function agruparGastos() {
 
 };
 
