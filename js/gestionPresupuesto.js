@@ -80,6 +80,8 @@ function CrearGasto(descripcion, gasto, fecha = Date.now(), ...etiquetas) {
       return fecha.toISOString().slice(0, 7);
     } else if (periodo == "anyo") {
       return fecha.getFullYear().toString();
+    } else {
+      return fecha.toISOString().slice(0, 7);
     }
   }
 
@@ -166,8 +168,24 @@ function filtrarGastos(gasto) {
   })
 };
 
-function agruparGastos() {
+function agruparGastos(periodo = "mes", etiquetas = [], fechaDesde, fechaHasta) {
+  let filtroGastos = filtrarGastos({
+    fechaDesde: fechaDesde,
+    fechaHasta: fechaHasta || new Date().toISOString().slice(0, 10),
+    etiquetasTiene: etiquetas
+  });
 
+  return filtroGastos.reduce((acc, gasto) => {
+    let periodoAgrupacion = gasto.obtenerPeriodoAgrupacion(periodo);
+
+    if (!acc[periodoAgrupacion]) {
+      acc[periodoAgrupacion] = 0;
+    }
+
+    acc[periodoAgrupacion] += gasto.valor;
+
+    return acc;
+  }, {});
 };
 
 // NO MODIFICAR A PARTIR DE AQUÍ: exportación de funciones y objetos creados para poder ejecutar los tests.
