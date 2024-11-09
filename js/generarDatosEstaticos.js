@@ -35,7 +35,7 @@ gastoMayor50.forEach(gasto => gestionPresupuestoWeb.mostrarGastoWeb("listado-gas
 let gastoMayor200Seguros = gestionPresupuesto.filtrarGastos({ valorMinimo: 200, etiquetas: ["seguros"] });
 gastosMayor200Seguros.forEach(gasto => gestionPresupuestoWeb.mostrarGastoWeb("listado-gastos-filtrado-3", gasto));
 
-let gastosComidaTransporteMenos50 = gestionPresupuesto.filtrarGastos({ valorMaximo: 49; etiquetas: ["comida", "transporte"] });
+let gastosComidaTransporteMenos50 = gestionPresupuesto.filtrarGastos({ valorMaximo: 49, etiquetas: ["comida", "transporte"] });
 gastosComidaTransporteMenos50.forEach(gasto => gestionPresupuestoWeb.mostrarGastoWeb("listado-gastos-filtrado-4", gasto));
 
 let gastosDia = gestionPresupuesto.agruparGastos(dia);
