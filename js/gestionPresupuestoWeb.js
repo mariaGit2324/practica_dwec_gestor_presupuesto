@@ -52,7 +52,11 @@ export function mostrarGastosAgrupadosWeb(idElemento, agrup, periodo) {
     bloque.classList.add("agrupacion");
 
     let titulo = document.createElement("h1");
-    titulo.textContent = `Gastos agrupados por ${periodo}`;
+    if (periodo == "anyo") {
+      titulo.textContent = "Gastos agrupados por año";
+    } else {
+      titulo.textContent = `Gastos agrupados por ${periodo}`;
+    }
     bloque.appendChild(titulo);
 
     Object.entries(agrup).forEach(([clave, valor]) => {
