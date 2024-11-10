@@ -81,3 +81,22 @@ export function mostrarGastosAgrupadosWeb(idElemento, agrup, periodo) {
     gastosAgrupados.appendChild(bloque);
   }
 }
+
+export function repintar() {
+  let presupuesto = gestionPresupuesto.mostrarPresupuesto();
+  mostrarDatoEnId("presupuesto", presupuesto);
+
+  let gastosTotales = gestionPresupuesto.calcularGastosTotales();
+  mostrarDatoEnId("gastos-totales", gastosTotales);
+
+  let balanceTotal = gestionPresupuesto.calcularBalance();
+  mostrarDatoEnId("balance-total", balanceTotal);
+
+  let listadoAnterior = document.getElementById("listado-gastos-completo");
+  listadoAnterior.innerHTML = "";
+
+  let listadoNuevo = gestionPresupuesto.listarGastos();
+  listadoNuevo.forEach(gasto => {
+    mostrarGastoWeb("listado-gastos-completo", gasto);
+  })
+};
