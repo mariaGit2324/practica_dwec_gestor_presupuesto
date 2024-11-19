@@ -131,3 +131,37 @@ function nuevoGastoWeb() {
 
 let botonAnyadirGasto = document.getElementById("anyadirgasto");
 botonAnyadirGasto.addEventListener("click", nuevoGastoWeb);
+
+
+function EditarHandle() {
+  this.handleEvent = function (event) {
+    let gastoDescripcion = prompt("Introduzca la descripción del gasto.", this.gasto.descripcion);
+    let gastoValor = prompt("Introduzca el valor del gasto.", this.gasto.valor);
+    let gastoFecha = prompt("Introduzca la fecha del gasto (yyyy-mm-dd)", new Date(this.gasto.fecha)).toISOString().slice(0, 10);
+    let gastoEtiquetas = prompt("Introduzca las etiquetas del gasto (primera,segunda,...)", this.gasto.etiquetas.join(","));
+    let valorNumero = parseFloat(gastoValor);
+    let etiquetas = gastoEtiquetas.split(",");
+
+    this.gasto.actualizarDescripcion(gastoDescripcion);
+    this.gasto.actualizarValor(valorNumero);
+    this.gasto.actualizarFecha(gastoFecha);
+    this.gasto.anyadirEtiquetas(...etiquetas);
+
+    repintar();
+
+  }
+}
+
+function BorrarHandle() {
+  this.handleEvent = function (event) {
+    gestionPresupuesto.borrarGasto(this.gasto.id);
+    repintar();
+  }
+}
+
+function BorrarEtiquetasHandle() {
+  this.hadleEvent = function (event) {
+    this.gasto.borrarEtiquetas(this.etiqueta);
+    repintar();
+  }
+}
