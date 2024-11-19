@@ -22,7 +22,7 @@ export function mostrarGastoWeb(idElemento, gasto) {
 
     let fecha = document.createElement("div");
     fecha.classList.add("gasto-fecha");
-    fecha.textContent = gasto.fecha;
+    fecha.textContent = new Date(gasto.fecha).toISOString().slice(0, 10);
     bloque.appendChild(fecha);
 
     let gastoValor = document.createElement("div");
@@ -114,3 +114,20 @@ function actualizarPresupuestoWeb() {
 
 let botonActualizarPresupuesto = document.getElementById("actualizarpresupuesto");
 botonActualizarPresupuesto.addEventListener("click", actualizarPresupuestoWeb);
+
+function nuevoGastoWeb() {
+  let gastoDescripcion = prompt("Introduzca la descripción del gasto");
+  let gastoValor = prompt("Introduzca el valor del gasto");
+  let gastoFecha = prompt("Introduzca la fecha del gasto (yyyy-mm-dd)");
+  let gastoEtiquetas = prompt("Introduzca etiquetas del gasto (primera,segunda,...)");
+  let valorNumero = parseFloat(gastoValor);
+  let etiquetas = gastoEtiquetas.split(",");
+
+  let nuevoGasto = new gestionPresupuesto.CrearGasto(gastoDescripcion, valorNumero, gastoFecha, ...etiquetas);
+  gestionPresupuesto.anyadirGasto(nuevoGasto);
+
+  repintar();
+}
+
+let botonAnyadirGasto = document.getElementById("anyadirgasto");
+botonAnyadirGasto.addEventListener("click", nuevoGastoWeb);
