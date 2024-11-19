@@ -86,7 +86,7 @@ export function repintar() {
   let presupuesto = gestionPresupuesto.mostrarPresupuesto();
   mostrarDatoEnId("presupuesto", presupuesto);
 
-  let gastosTotales = gestionPresupuesto.calcularGastosTotales();
+  let gastosTotales = gestionPresupuesto.calcularTotalGastos();
   mostrarDatoEnId("gastos-totales", gastosTotales);
 
   let balanceTotal = gestionPresupuesto.calcularBalance();
@@ -99,4 +99,18 @@ export function repintar() {
   listadoNuevo.forEach(gasto => {
     mostrarGastoWeb("listado-gastos-completo", gasto);
   })
-};
+}
+
+function actualizarPresupuestoWeb() {
+  let presupuestoNuevo = prompt("Introduzca nuevo presupuesto");
+  let numPresupuesto = parseFloat(presupuestoNuevo);
+
+  if (!isNaN(numPresupuesto)) {
+    gestionPresupuesto.actualizarPresupuesto(numPresupuesto);
+  }
+
+  repintar();
+}
+
+let botonActualizarPresupuesto = document.getElementById("actualizarpresupuesto");
+botonActualizarPresupuesto.addEventListener("click", actualizarPresupuestoWeb);
