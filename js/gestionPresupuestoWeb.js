@@ -37,12 +37,39 @@ export function mostrarGastoWeb(idElemento, gasto) {
       let span = document.createElement("span");
       span.classList.add("gasto-etiquetas-etiqueta");
       span.textContent = etiqueta;
+
+      let borradoEtiquetas = new BorrarEtiquetasHandle();
+      borradoEtiquetas.gasto = gasto;
+      borradoEtiquetas.etiqueta = etiqueta;
+      span.addEventListener("click", borradoEtiquetas);
+
       etiquetas.appendChild(span);
     });
     bloque.appendChild(etiquetas);
 
-    mostrarGasto.appendChild(bloque);
+    let botonEditar = document.createElement("button");
+    botonEditar.classList.add("gasto-editar");
+    botonEditar.type = "button";
+    botonEditar.textContent = "Editar";
 
+    let editarGasto = new EditarHandle();
+    editarGasto.gasto = gasto;
+
+    botonEditar.addEventListener("click", editarGasto);
+    bloque.appendChild(botonEditar);
+
+    let botonBorrar = document.createElement("button");
+    botonBorrar.classList.add("gasto-borrar");
+    botonBorrar.type = "button";
+    botonBorrar.textContent = "Borrar";
+
+    let borrarGasto = new BorrarHandle();
+    borrarGasto.gasto = gasto;
+
+    botonBorrar.addEventListener("click", borrarGasto);
+    bloque.appendChild(botonBorrar);
+
+    mostrarGasto.appendChild(bloque);
   }
 }
 
@@ -137,7 +164,7 @@ function EditarHandle() {
   this.handleEvent = function (event) {
     let gastoDescripcion = prompt("Introduzca la descripción del gasto.", this.gasto.descripcion);
     let gastoValor = prompt("Introduzca el valor del gasto.", this.gasto.valor);
-    let gastoFecha = prompt("Introduzca la fecha del gasto (yyyy-mm-dd)", new Date(this.gasto.fecha)).toISOString().slice(0, 10);
+    let gastoFecha = prompt("Introduzca la fecha del gasto (yyyy-mm-dd)", new Date(this.gasto.fecha).toISOString().slice(0, 10));
     let gastoEtiquetas = prompt("Introduzca las etiquetas del gasto (primera,segunda,...)", this.gasto.etiquetas.join(","));
     let valorNumero = parseFloat(gastoValor);
     let etiquetas = gastoEtiquetas.split(",");
@@ -160,7 +187,7 @@ function BorrarHandle() {
 }
 
 function BorrarEtiquetasHandle() {
-  this.hadleEvent = function (event) {
+  this.handleEvent = function (event) {
     this.gasto.borrarEtiquetas(this.etiqueta);
     repintar();
   }
