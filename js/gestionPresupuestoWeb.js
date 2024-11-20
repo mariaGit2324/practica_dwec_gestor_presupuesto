@@ -69,6 +69,15 @@ export function mostrarGastoWeb(idElemento, gasto) {
     botonBorrar.addEventListener("click", borrarGasto);
     bloque.appendChild(botonBorrar);
 
+    let botonEditarFormulario = document.createElement("button");
+    botonEditarFormulario.type = "button";
+    botonEditarFormulario.classList.add("gasto-editar-formulario");
+    botonEditarFormulario.textContent = "Editar (formulario)";
+
+    let editarFormulario = new EditarHandleformulario();
+
+    botonEditarFormulario.addEventListener("click", editarFormulario);
+
     mostrarGasto.appendChild(bloque);
   }
 }
@@ -240,3 +249,8 @@ function CancelarDatos() {
   }
 }
 
+function EditarHandleformulario() {
+  this.handleEvent = function (event) {
+
+  }
+}
