@@ -192,3 +192,44 @@ function BorrarEtiquetasHandle() {
     repintar();
   }
 }
+
+function nuevoGastoWebFormulario() {
+  let plantillaFormulario = document.getElementById("formulario-template").content.cloneNode(true);
+
+  var formulario = plantillaFormulario.querySelector("form");
+
+  formulario.addEventListener("submit", enviarDatos);
+
+  let datosCancelados = new CancelarDatos();
+  datosCancelados.formulario = formulario;
+  datosCancelados.botonFormulario = event.currentTarget;
+
+  let botonCancelarFormulario = formulario.querySelector("button.cancelar");
+  botonCancelarFormulario.addEventListener("click", datosCancelados);
+}
+
+let botonAnyadirGastoFormulario = document.getElementById("anyadirgasto-formulario");
+botonAnyadirGastoFormulario.addEventListener("click", nuevoGastoWebFormulario);
+
+function enviarDatos(event) {
+  event.preventDefault();
+
+  let descripcion = event.currentTarget.elements.descripcion.value;
+  let valor = parseFloat(event.currentTarget.elements.valor.value);
+  let fecha = event.currentTarget.elements.fecha.value;
+  let etiquetas = event.currentTarget.elements.etiquetas.value.split(',');
+
+  let nuevoGasto = new gestionPresupuesto.CrearGasto(descripcion, valor, fecha, ...etiquetas);
+  gestionPresupuesto.anyadirGasto(nuevoGasto);
+  repintar();
+
+  let botonAnyadirGastoFormulario = document.getElementById("anyadirgasto-formulario");
+  botonAnyadirGastoFormulario.disabled = false;
+}
+
+function CancelarDatos() {
+  this.handleEvent = function (event) {
+
+  }
+}
+
