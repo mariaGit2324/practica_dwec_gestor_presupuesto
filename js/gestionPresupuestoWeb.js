@@ -75,8 +75,10 @@ export function mostrarGastoWeb(idElemento, gasto) {
     botonEditarFormulario.textContent = "Editar (formulario)";
 
     let editarFormulario = new EditarHandleformulario();
+    editarFormulario.gasto = gasto;
 
     botonEditarFormulario.addEventListener("click", editarFormulario);
+    bloque.appendChild(botonEditarFormulario);
 
     mostrarGasto.appendChild(bloque);
   }
@@ -251,6 +253,40 @@ function CancelarDatos() {
 
 function EditarHandleformulario() {
   this.handleEvent = function (event) {
+    let plantillaFormulario = document.getElementById("formulario-template").content.cloneNode(true);
+    var formulario = plantillaFormulario.querySelector("form");
 
+    formulario.elements.descripcion.value = this.gasto.descripcion;
+    formulario.elements.valor.value = this.gasto.valor;
+    formulario.elements.fecha.value = new Date(this.gasto.fecha).toISOString().slice(0, 10);
+    formulario.elements.etiquetas.value = this.gasto.etiquetas.join(",");
+
+    let datosActualizados = new EditarFormularioUpdate();
+    datosActualizados.gasto = this.gasto;
+    formulario.addEventListener("submit", datosActualizados);
+
+    let botonCancelarActualizacion = formulario.querySelector(".cancelar");
+    let cancelarActualizacionDatos = new CancelarDatos();
+    cancelarActualizacionDatos.botonFormulario = event.currentTarget;
+    cancelarActualizacionDatos.formulario = formulario;
+    botonCancelarActualizacion.addEventListener("click", cancelarActualizacionDatos);
+    event.currentTarget.disabled = true;
+
+    let bloqueFormulario = document.querySelector(".gasto");
+    bloqueFormulario.appendChild(formulario);
+  }
+}
+
+function EditarFormularioUpdate() {
+  this.handleEvent = function (event) {
+    this.gasto.actualizarDescripcion(event.currentTarget.elements.descripcion.value);
+    this.gasto.actualizarValor(parseFloat(event.currentTarget.elements.valor.value));
+    this.gasto.actualizarFecha(event.currentTarget.elements.fecha.value);
+    let etiquetas = event.currentTarget.elements.etiquetas.value.split(",");
+    this.gasto.borrarEtiquetas(...this.gasto.etiquetas);
+    this.gasto.anyadirEtiquetas(...etiquetas);
+
+    event.preventDefault();
+    repintar();
   }
 }
