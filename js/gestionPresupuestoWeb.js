@@ -333,3 +333,29 @@ function filtrarGastosWeb(event) {
 let botonFiltrarGastosWeb = document.getElementById("formulario-filtrado");
 botonFiltrarGastosWeb.addEventListener("submit", filtrarGastosWeb);
 
+function guardarGastosWeb() {
+  let gastos = gestionPresupuesto.listarGastos();
+  localStorage.setItem("GestorGastosDWEC", JSON.stringify(gastos));
+};
+
+let botonGuardarDatos = document.getElementById("guardar-gastos");
+botonGuardarDatos.addEventListener("click", guardarGastosWeb);
+
+function cargarGastosWeb() {
+  let gastosRecuperados = localStorage.getItem("GestorGastosDWEC");
+  let gastosFinales;
+
+  if (gastosRecuperados) {
+    gastosFinales = JSON.parse(gastosRecuperados);
+  } else {
+    gastosFinales = [];
+  }
+
+  gestionPresupuesto.cargarGastos(gastosFinales);
+
+  repintar();
+};
+
+let botonCargarDatos = document.getElementById("cargar-gastos");
+botonCargarDatos.addEventListener("click", cargarGastosWeb);
+
