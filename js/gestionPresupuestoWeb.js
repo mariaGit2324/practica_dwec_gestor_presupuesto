@@ -69,6 +69,14 @@ export function mostrarGastoWeb(idElemento, gasto) {
     botonBorrar.addEventListener("click", borrarGasto);
     bloque.appendChild(botonBorrar);
 
+    let botonBorrarAPI = document.createElement("button");
+    botonBorrarAPI.type = "button";
+    botonBorrarAPI.classList.add("gasto-borrar-api");
+    botonBorrarAPI.textContent = "Borrar (API)";
+
+    botonBorrarAPI.addEventListener("click", () => borrarGastoAPI(gasto.gastoId));
+    bloque.appendChild(botonBorrarAPI);
+
     let botonEditarFormulario = document.createElement("button");
     botonEditarFormulario.type = "button";
     botonEditarFormulario.classList.add("gasto-editar-formulario");
@@ -218,10 +226,43 @@ function nuevoGastoWebFormulario(event) {
   let botonCancelarFormulario = formulario.querySelector("button.cancelar");
   botonCancelarFormulario.addEventListener("click", datosCancelados);
 
-  event.currentTarget.disabled = "true";
+  let botonEnviarAPI = formulario.querySelector(".gasto-enviar-api");
+
+  botonEnviarAPI.addEventListener("click", async function () {
+    await enviarGastoAPI(formulario);
+  });
+
+  event.currentTarget.disabled = true;
 
   let formularioDatos = document.getElementById("controlesprincipales");
   formularioDatos.appendChild(formulario);
+
+  async function enviarGastoAPI(formulario) {
+    let nombreUsuario = document.getElementById("nombre_usuario").value;
+    let url = `https://suhhtqjccd.execute-api.eu-west-1.amazonaws.com/latest/${nombreUsuario}`;
+
+    let nuevoGasto = {
+      descripcion: formulario.elements.descripcion.value,
+      valor: parseFloat(formulario.elements.valor.value),
+      fecha: formulario.elements.fecha.value,
+      etiquetas: formulario.elements.etiquetas.value.split(",").map(etiqueta => etiqueta.trim())
+    };
+
+    try {
+      let respuesta = await fetch(url, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(nuevoGasto)
+      });
+
+      if (!respuesta.ok) throw new Error("Error al enviar el gasto.");
+
+      await cargarGastosAPI();
+      alert("El gasto se ha creado correctamente.");
+    } catch (error) {
+      console.log("Error al enviar el gasto a la API: " + error.Message);
+    }
+  }
 
 }
 
@@ -264,6 +305,40 @@ function EditarHandleformulario() {
     let datosActualizados = new EditarFormularioUpdate();
     datosActualizados.gasto = this.gasto;
     formulario.addEventListener("submit", datosActualizados);
+
+    let botonEnviarAPI = formulario.querySelector(".gasto-enviar-api");
+    botonEnviarAPI.addEventListener("click", async () => {
+      let nombreUsuario = document.getElementById("nombre_usuario").value;
+      if (!nombreUsuario) {
+        alert("Introduce un nombre de usuario.");
+        return;
+      }
+
+      let gastoId = this.gasto.gastoId;
+      let url = `https://suhhtqjccd.execute-api.eu-west-1.amazonaws.com/latest/${nombreUsuario}/${gastoId}`;
+
+      let gastoActualizado = {
+        descripcion: formulario.elements.descripcion.value,
+        valor: parseFloat(formulario.elements.valor.value),
+        fecha: formulario.elements.fecha.value,
+        etiquetas: formulario.elements.etiquetas.value.split(",").map(etiqueta => etiqueta.trim()),
+      };
+
+      try {
+        let respuesta = await fetch(url, {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(gastoActualizado)
+        });
+
+        if (!respuesta.ok) throw new Error("Error al actualizar el gasto.");
+
+        await cargarGastosAPI();
+        alert("Gasto actualizado correctamente.");
+      } catch (error) {
+        console.log("Error al actualizar el gasto: " + error.Message);
+      }
+    });
 
     let botonCancelarActualizacion = formulario.querySelector(".cancelar");
     let cancelarActualizacionDatos = new CancelarDatos();
@@ -359,7 +434,7 @@ function cargarGastosWeb() {
 let botonCargarDatos = document.getElementById("cargar-gastos");
 botonCargarDatos.addEventListener("click", cargarGastosWeb);
 
-async function cargarGastosApi() {
+async function cargarGastosAPI() {
   let nombreUsuario = document.getElementById("nombre_usuario").value;
   if (!nombreUsuario) {
     alert("Introduce un nombre de usuario.");
@@ -373,11 +448,31 @@ async function cargarGastosApi() {
     if (!respuesta.ok) throw new Error("Error al cargar los gastos.");
 
     let gastos = await respuesta.json();
-    cargarGastos(gastos);
+    gestionPresupuesto.cargarGastos(gastos);
     repintar();
   } catch (error) {
     console.log("Error: " + error.message);
   }
 }
 
-document.getElementById("cargar-gastos-api").addEventListener("click", cargarGastosApi);
+document.getElementById("cargar-gastos-api").addEventListener("click", cargarGastosAPI);
+
+async function borrarGastoAPI(id) {
+  const usuario = document.getElementById("nombre_usuario").value;
+  if (!usuario) {
+    alert("Introduce un nombre de usuario");
+    return;
+  }
+
+  const url = `https://suhhtqjccd.execute-api.eu-west-1.amazonaws.com/latest/${usuario}/${id}`;
+
+  try {
+    const respuesta = await fetch(url, { method: "DELETE" });
+    if (!respuesta.ok) throw new Error("Error al borrar el gasto.");
+
+    cargarGastosAPI();
+    alert("El gasto se ha borrado correctamente.");
+  } catch (error) {
+    console.log("Error: " + error.Message);
+  }
+}
