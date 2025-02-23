@@ -359,3 +359,25 @@ function cargarGastosWeb() {
 let botonCargarDatos = document.getElementById("cargar-gastos");
 botonCargarDatos.addEventListener("click", cargarGastosWeb);
 
+async function cargarGastosApi() {
+  let nombreUsuario = document.getElementById("nombre_usuario").value;
+  if (!nombreUsuario) {
+    alert("Introduce un nombre de usuario.");
+    return;
+  }
+
+  let url = `https://suhhtqjccd.execute-api.eu-west-1.amazonaws.com/latest/${nombreUsuario}`;
+
+  try {
+    let respuesta = await fetch(url);
+    if (!respuesta.ok) throw new Error("Error al cargar los gastos.");
+
+    let gastos = await respuesta.json();
+    cargarGastos(gastos);
+    repintar();
+  } catch (error) {
+    console.log("Error: " + error.message);
+  }
+}
+
+document.getElementById("cargar-gastos-api").addEventListener("click", cargarGastosApi);
